@@ -1,3 +1,4 @@
+[README (1).md](https://github.com/user-attachments/files/32642339/README.1.md)
 # Reels Posting Agent
 
 A tiny web server that reliably posts a video as a Facebook Reel with a
@@ -63,10 +64,31 @@ HEAD request, download, upload, finish) with a single **HTTP Request** node:
 That's it — one node instead of five, and no more exact-byte-size problems,
 because this script reads the real file size straight off the disk.
 
+## Posting to Instagram
+
+Use the same server's second route: **`/post-instagram-reel`**
+
+- **Method**: POST
+- **URL**: `http://YOUR_SERVER_IP:5000/post-instagram-reel` (or your Render URL)
+- **Body Content Type**: JSON
+- **Body**:
+```json
+{
+  "video_url": "={{ $json.driveDirectDownloadLink }}",
+  "caption": "={{ $json.captions }}",
+  "ig_user_id": "1260966167099030",
+  "access_token": "YOUR_LONG_LIVED_TOKEN"
+}
+```
+
+Note: Instagram's API fetches the video from `video_url` itself (rather
+than receiving uploaded bytes like Facebook does), so the URL must be
+publicly reachable — the same Drive direct-download link format works.
+Instagram also takes a little longer to process before publishing; the
+script polls automatically and only returns once it's actually live.
+
 ## Next steps (once this is working)
 
-- Add a matching `/post-instagram-reel` route (same pattern, Instagram's
-  container + publish endpoints instead of Facebook's).
 - Add YouTube and LinkedIn routes the same way.
 - Move the access token into an environment variable instead of passing it
   in every request, so it's not sitting in your n8n workflow in plain text.
